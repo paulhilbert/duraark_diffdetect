@@ -5,6 +5,7 @@
 
 #include <duraark_rdf/turtle_input_helper.hpp>
 #include <e57_pcl/read.hpp>
+#include <e57_pcl/write.hpp>
 #include <Eigen/Dense>
 
 #include <boost/filesystem.hpp>
