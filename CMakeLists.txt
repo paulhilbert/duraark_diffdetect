@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 2.8.8)
+project(diffdetect)
+
+set (e57_processor_VERSION_MAJOR 0)
+set (e57_processor_VERSION_MINOR 1)
+
+include_directories("${PROJECT_SOURCE_DIR}")
+include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}/include")
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    if (NOT WIN32)
+        add_definitions(-fPIC)
+    else()
+        add_definitions(-DM_LOG2E=1.44269504088896340736)
+    endif()
+	add_definitions(-O3)
+	add_definitions(-g)
+	add_definitions(-std=c++1y)
+    add_definitions(-Wall)
+    add_definitions(-Wno-unused-function)
+    add_definitions(-Wno-unused-local-typedefs)
+    add_definitions(-Wno-deprecated-declarations)
+endif()
+
+find_package(Eigen)
+find_package(PCL COMPONENTS common io search filters keypoints features)
+find_package(Boost COMPONENTS system program_options filesystem random iostreams thread)
+find_package(E57PCL)
+find_package(IFCMeshExtract)
+find_package(OpenMesh)
+find_package(DuraarkRDF)
+
+file (GLOB_RECURSE obj RELATIVE "${PROJECT_SOURCE_DIR}" "src/*.cpp")
+if (EIGEN_FOUND AND PCL_FOUND AND Boost_FOUND AND E57PCL_FOUND AND IFCMESHEXTRACT_FOUND AND OPENMESH_FOUND AND DURAARKRDF_FOUND)
+	include_directories(${EIGEN_INCLUDE_DIRS})
+	include_directories(${PCL_INCLUDE_DIRS})
+	include_directories(${Boost_INCLUDE_DIRS})
+	include_directories(${E57PCL_INCLUDE_DIRS})
+	include_directories(${IFCMESHEXTRACT_INCLUDE_DIRS})
+	include_directories(${DURAARKRDF_INCLUDE_DIRS})
+
+	add_executable(diffdetect ${obj})
+	target_link_libraries(diffdetect ${Boost_LIBRARIES} ${OPENMESH_LIBRARIES} ${PCL_LIBRARIES} ${E57PCL_LIBRARIES} ${DURAARKRDF_LIBRARIES} "dl")
+
+	# install binary
+    install (TARGETS diffdetect DESTINATION bin)
+endif()
+
