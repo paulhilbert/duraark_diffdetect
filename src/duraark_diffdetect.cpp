@@ -72,11 +72,14 @@ int main (int argc, char const* argv[]) {
         for (auto& col : colors) {
             col = new_col;
         }
+        uint32_t count = 0;
         for (const auto& assoc : assocs) {
             for (const auto& idx : assoc.point_indices) {
                 colors[idx] = Eigen::Vector3f::Ones();
             }
+            count += assoc.point_indices.size();
         }
+        std::cout << "Colored " << count << "/" << cloud->size() << " points as associated" << "\n";
 
         e57_pcl::write_e57n(path_out.string(), cloud, guid, &colors);
     }
